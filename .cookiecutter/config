@@ -1,0 +1,5 @@
+# Change these at your peril:
+export PROJECT_NAME=discovery_climate_music_analysis
+export REPO_NAME=discovery_climate_music_analysis
+export DESCRIPTION=Analysis of music with content related to the environment and climate.
+export PROJECT_OPENNESS=public
