@@ -10,6 +10,9 @@ scratch*
 research_daps/
 *.key
 
+# Credentials
+credentials.yaml
+
 # Report
 *.aux
 *.bbl
