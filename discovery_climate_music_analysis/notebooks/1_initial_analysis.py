@@ -92,11 +92,13 @@ alt.Chart(
     y=alt.Y("name", sort="-x"),
     x=alt.X("popularity:Q"),
     color=alt.Color("popularity:Q"),
-    tooltip=["name", "artist", "popularity"],
+    tooltip=["name", "artist", "popularity", "release_decade"],
 ).transform_window(
     rank="rank(popularity)", sort=[alt.SortField("popularity", order="descending")]
 ).transform_filter(
-    (alt.datum.rank < 20)
+    (alt.datum.rank < 21)
 ).configure_axis(
     labelLimit=1000
 )
+
+# %%
