@@ -29,20 +29,27 @@ from pprint import pprint
 from dateutil.parser import parse
 
 from discovery_climate_music_analysis.getters.collect_songs import create_dataframe
+from discovery_climate_music_analysis.getters.collect_chart_songs import load_s3_data
 from jacc_hammer.fuzzy_hash import Cos_config, Fuzzy_config, match_names_stream
 
 USERNAME = "addie234"
 PLAYLIST_ID = "spotify:playlist:4EhBYkl4jtI2POrkUxU6Ul"
 
-# %%
-# read chart data
-all_top_charts = pd.read_csv("output.csv", header=None)
-all_top_charts.columns = ["week_start", "chart_pos", "artist", "song"]
-all_top_charts.reset_index(drop=True, inplace=True)
+
+bucket_name = "discovery-hub-open-data"
 
 # %%
-# climate songs dataframe
-spotify_df_ = create_dataframe(USERNAME, PLAYLIST_ID)
+# read chart data
+all_top_charts = load_s3_data(
+    bucket_name, "climate_change_environment_songs/chart_songs.csv"
+)
+
+# %%
+all_top_charts = all_top_charts.columns.to_frame().T.append(
+    all_top_charts, ignore_index=True
+)
+all_top_charts.columns = ["week_start", "chart_pos", "artist", "song"]
+all_top_charts.reset_index(drop=True, inplace=True)
 
 # %% [markdown]
 # ## Have any of our songs charted?
