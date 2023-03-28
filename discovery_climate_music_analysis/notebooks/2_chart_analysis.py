@@ -39,6 +39,9 @@ PLAYLIST_ID = "spotify:playlist:4EhBYkl4jtI2POrkUxU6Ul"
 bucket_name = "discovery-hub-open-data"
 
 # %%
+spotify_df_ = create_dataframe(USERNAME, PLAYLIST_ID)
+
+# %%
 # read chart data
 all_top_charts = load_s3_data(
     bucket_name, "climate_change_environment_songs/chart_songs.csv"
@@ -135,6 +138,33 @@ spotify_w_chart_match["charted?"] = spotify_w_chart_match["x"].apply(
 
 alt.Chart(spotify_w_chart_match).properties(width=250, height=300).mark_bar().encode(
     x="release_decade:O", y="count():Q", color="charted?"
+)
+
+# %% [markdown]
+# ratio of songs (based on release dates) that have charted in the UK Top 100 official charts  - normalised
+
+# %%
+spotify_w_chart_match["charted?"] = spotify_w_chart_match["x"].apply(
+    lambda x: "y" if pd.notnull(x) else "n"
+)
+
+spotify_w_chart_match["charted?"] = spotify_w_chart_match["charted?"].map(
+    {"y": "Yes", "n": "No"}
+)
+
+spotify_w_chart_match["order"] = spotify_w_chart_match["charted?"].replace(
+    {val: i for i, val in enumerate(["Yes", "No"])}
+)
+
+alt.Chart(spotify_w_chart_match).properties(width=380, height=200).mark_bar(
+    opacity=0.9
+).encode(
+    y="release_decade:O",
+    x=alt.X("count():Q", stack="normalize", axis=alt.Axis(format="%")),
+    color=alt.Color(
+        "charted?", sort=alt.EncodingSortField("order", order="descending")
+    ),
+    order="order",
 )
 
 # %% [markdown]
